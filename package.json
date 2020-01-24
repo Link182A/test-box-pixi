@@ -1,0 +1,26 @@
+{
+  "name": "test-box",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-typescript": "^7.8.3",
+    "sass": "^1.25.0",
+    "typescript": "^3.7.4"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.8.3",
+    "pixi": "^0.3.1",
+    "pixi.js": "^5.2.0"
+  }
+}
