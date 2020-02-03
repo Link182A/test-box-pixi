@@ -1,19 +1,23 @@
 import * as PIXI from 'pixi.js'
 import { App } from '../interfaces'
 
-export class Application implements App {
+window.PIXI = PIXI
+
+class Application implements App {
 	renderer: PIXI.Renderer
 	ticker: PIXI.Ticker
 	stage: PIXI.Container
-
 	constructor() {
+		const container = document.getElementById('gameContainer')!;
+
 		this.renderer = new PIXI.Renderer({
-			width: window.innerWidth,
-			height: window.innerHeight,
+			width: container.offsetWidth,
+			height: container.offsetHeight,
+			antialias: true,
 			resolution: 1
 		})
 
-		document.body.appendChild(this.renderer.view)
+		container.appendChild(this.renderer.view)
 
 		this.ticker = new PIXI.Ticker()
 		this.stage = new PIXI.Container()
@@ -22,13 +26,24 @@ export class Application implements App {
 			PIXI.UPDATE_PRIORITY.LOW
 		)
 		this.ticker.start()
+
+		window.addEventListener('resize', ()=>{
+			this.changeSize(container.offsetWidth, container.offsetHeight)
+		})
 	}
 
-	get screen(){
+	get screen() {
 		return this.renderer.screen
+	}
+
+	changeSize( width:number, height:number ): void {
+		this.renderer.view.style.width = width + 'px'
+		this.renderer.view.style.height = height + 'px'
 	}
 
 	render() {
 		this.renderer.render(this.stage)
 	}
 }
+
+export default new Application
