@@ -6,13 +6,23 @@ export interface App {
 		width:number
 		height:number
 	}
+	joy:Joy
 	changeSize(width:number, height:number): void
-	// loader?: PIXI.Loader
-	// world?: any
-	// visual?: any
 	render(): void
 }
 
-// export interface Visual {
-// 	 texture: PIXI.Texture
-// }
+export interface Direction{
+	direction: 'up' | 'down' | 'left' | 'right' | null
+	xForse: number
+	yForse: number
+}
+
+export interface Joy {
+	app: App
+	container: PIXI.Graphics
+	nipple: PIXI.Graphics
+	containerRadius: number
+	dragging: boolean
+	data: null | PIXI.interaction.InteractionData
+	directionData: Direction
+}

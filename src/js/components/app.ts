@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
-import { App } from '../interfaces'
+import { App, Joy } from '../interfaces'
+import Joystick from './joystick'
 
 window.PIXI = PIXI
 
@@ -7,6 +8,7 @@ class Application implements App {
 	renderer: PIXI.Renderer
 	ticker: PIXI.Ticker
 	stage: PIXI.Container
+	joy: Joy
 	constructor() {
 		const container = document.getElementById('gameContainer')!;
 
@@ -27,6 +29,8 @@ class Application implements App {
 		)
 		this.ticker.start()
 
+		this.joy = new Joystick(this)
+
 		window.addEventListener('resize', ()=>{
 			this.changeSize(container.offsetWidth, container.offsetHeight)
 		})
@@ -43,6 +47,8 @@ class Application implements App {
 
 	render() {
 		this.renderer.render(this.stage)
+		// console.log(this.joy.directionData);
+		
 	}
 }
 
