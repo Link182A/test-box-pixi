@@ -31,22 +31,24 @@ export default class Joystick extends PIXI.Container implements Joy{
 		this.y = this.app.screen.height - (this.containerRadius * 2.5)
 
 		this.nipple
-			.lineStyle(2, 0xb2b2b2, 1)
+			// .lineStyle(2, 0xb2b2b2, 1)
 			.beginFill(0x650A5A, 1)
-			.drawCircle(0, 0, this.containerRadius / 3)
+			.drawCircle(0, 0, this.containerRadius / 2.5)
 			.endFill()
 
 		this.container
-			.lineStyle(2, 0xb2b2b2, 1)
-			.beginFill(0x650A5A, .5)
+			// .lineStyle(2, 0xb2b2b2, 1)
+			.beginFill(0x650A5A, 1)
 			.drawCircle(0, 0, this.containerRadius)
 			.endFill()
 			.on('pointerdown', this.onDragStart.bind(this))
 			.on('pointermove', this.setNippleCoordinates.bind(this))
 			.on('pointerup', this.onDragEnd.bind(this))
+			.on('pointerupoutside', this.onDragEnd.bind(this))
 			.interactive = true
 
-		this.container.addChild(this.nipple)
+			this.container.alpha = .5
+			this.container.addChild(this.nipple)
 
 		this.addChild(this.container)
 		this.app.stage.addChild(this)
@@ -71,6 +73,7 @@ export default class Joystick extends PIXI.Container implements Joy{
 	}
 
 	onDragStart(e: PIXI.interaction.InteractionEvent) {
+		this.container.alpha = .75
 		this.data = e.data
 		this.dragging = true
 		const { x, y } = this.data.getLocalPosition(this.container)
@@ -80,6 +83,8 @@ export default class Joystick extends PIXI.Container implements Joy{
 	}
 
 	onDragEnd() {
+		this.container.alpha = .5
+
 		this.nipple.x = 0
 		this.nipple.y = 0
 		this.data = null

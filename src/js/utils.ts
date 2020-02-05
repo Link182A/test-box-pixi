@@ -17,14 +17,25 @@ export const degrees = (a: number) => {
 	return a * (180 / Math.PI);
 };
 
-export const direction = (x: number, y: number):Direction => {
+export const direction = (x: number, y: number): Direction => {
 	const rAngle = angle(x, y)
 	const angle45 = 45
+	let mx: number
+	let my: number
 
-	const mx = Math.abs(x) >= 1 ? 1 : x
-	const my = Math.abs(y) >= 1 ? 1 : y
+	if (x >= 0) {
+		mx = x >= 1 ? 1 : x
+	} else if (x < 0) {
+		mx = x <= -1 ? -1 : x
+	}
 
-	let direction:'up' | 'down' | 'left' | 'right'
+	if (y >= 0) {
+		my = y >= 1 ? 1 : y
+	} else if (y < 0) {
+		my = y <= -1 ? -1 : y
+	}
+
+	let direction: 'up' | 'down' | 'left' | 'right'
 
 	if (
 		rAngle > angle45 &&

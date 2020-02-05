@@ -6,7 +6,7 @@ export interface App {
 		width:number
 		height:number
 	}
-	joy:Joy
+	joy?:Joy
 	changeSize(width:number, height:number): void
 	render(): void
 }
