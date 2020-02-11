@@ -20,8 +20,8 @@ export const degrees = (a: number) => {
 export const direction = (x: number, y: number): Direction => {
 	const rAngle = angle(x, y)
 	const angle45 = 45
-	let mx: number
-	let my: number
+	let mx: number = 0
+	let my: number = 0
 
 	if (x >= 0) {
 		mx = x >= 1 ? 1 : x

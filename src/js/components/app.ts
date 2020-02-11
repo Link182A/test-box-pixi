@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
-import { App, Joy } from '../interfaces'
+import { App, Joy, JoystickOptions } from '../interfaces'
 import Joystick from './joystick'
+import AlignGrid from '../utils/alignGrid'
 
 window.PIXI = PIXI
 
@@ -9,17 +10,18 @@ class Application implements App {
 	ticker: PIXI.Ticker
 	stage: PIXI.Container
 	joy: Joy
+	container: HTMLElement
 	constructor() {
-		const container = document.getElementById('gameContainer')!;
+		this.container = document.getElementById('gameContainer')!;
 
 		this.renderer = new PIXI.Renderer({
-			width: container.offsetWidth,
-			height: container.offsetHeight,
+			width: this.container.clientWidth,
+			height: this.container.clientHeight,
 			antialias: true,
 			resolution: 1
 		})
 
-		container.appendChild(this.renderer.view)
+		this.container.appendChild(this.renderer.view)
 
 		this.ticker = new PIXI.Ticker()
 		this.stage = new PIXI.Container()
@@ -29,26 +31,46 @@ class Application implements App {
 		)
 		this.ticker.start()
 
-		this.joy = new Joystick(this)
+		this.joy = new Joystick(this, this.joystickOptions())
 
-		window.addEventListener('resize', ()=>{
-			this.changeSize(container.offsetWidth, container.offsetHeight)
+		window.addEventListener('resize', () => {
+			this.changeSize()
 		})
+
+		const gridConfig = {
+			rows: 5,
+			cols: 10
+		}
+		const grid =  new AlignGrid(this, gridConfig)
+			.show()
+			.showNumbers()
+			.placeAtIndex(31, this.joy)
 	}
 
-	get screen() {
+	get screen(): PIXI.Rectangle {
 		return this.renderer.screen
 	}
 
-	changeSize( width:number, height:number ): void {
-		this.renderer.view.style.width = width + 'px'
-		this.renderer.view.style.height = height + 'px'
+	joystickOptions(): JoystickOptions {
+		const radius = 70
+		return {
+			x: radius * 3,
+			y: this.renderer.height - radius * 2.5,
+			radius: radius
+		}
+	}
+
+	changeSize(): void {
+		const option = this.joystickOptions()
+
+		this.renderer.resize(this.container.clientWidth, this.container.clientHeight)
+		this.joy.position.set(option.x, option.y)
 	}
 
 	render() {
 		this.renderer.render(this.stage)
 		// console.log(this.joy.directionData);
-		
+
 	}
 }
 
