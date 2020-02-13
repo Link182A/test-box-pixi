@@ -11,9 +11,10 @@ interface Config {
 export default class AlignGrid {
 	app: App
 	config: Config
-	boxWidth: number
-	boxHeight: number
+	boxWidth?: number
+	boxHeight?: number
 	graphics?: PIXI.Graphics
+	textContainer?:PIXI.Container
 
 	constructor(app: App, config: Config) {
 		this.app = app
@@ -31,54 +32,69 @@ export default class AlignGrid {
 			config.width = app.screen.width
 		}
 
-		this.boxWidth = config.width / config.cols;
-		this.boxHeight = config.height / config.rows
-
 		this.config = config
-
 	}
 
-	show() {
-		this.graphics = new PIXI.Graphics
-		this.graphics.lineStyle(2, 0xff0000, 1)
-
-		for (let i = 0; i < this.config.width!; i += this.boxWidth) {
-			this.graphics.moveTo(i, 0)
+	drowLines() {
+		for (let i = this.boxWidth!; i < this.config.width!; i += this.boxWidth!) {
+			this.graphics!.moveTo(i, 0)
 				.lineTo(i, this.config.height!)
 		}
 
-		for (let i = 0; i < this.config.height!; i += this.boxHeight) {
-			this.graphics
+		for (let i = this.boxHeight!; i < this.config.height!; i += this.boxHeight!) {
+			this.graphics!
 				.moveTo(0, i)
 				.lineTo(this.config.width!, i)
 		}
-
-		this.app.stage.addChild(this.graphics)
-
 		return this
 	}
 
-	placeAtIndex(index:number, gameObject: any) {
-		const y = Math.floor(index / this.config.cols);
-		const x = index - (y * this.config.cols);
+	show() {
+		const { width, height } = this.app.screen
+		this.config.width = width
+		this.config.height = height
+		this.boxWidth = width / this.config.cols
+		this.boxHeight = height / this.config.rows
 
-		this.placeByCoord(x, y, gameObject);
+		if (this.graphics) {
+			this.graphics.clear()
+			this.graphics.lineStyle(2, 0xff0000, 1)
+			this.drowLines()
+			return this
+		}
+
+		this.graphics = new PIXI.Graphics
+		this.graphics.lineStyle(2, 0xff0000, 1)
+		this.drowLines()
+		this.app.stage.addChild(this.graphics)
+		return this
+	}
+
+	placeAtIndex(index: number, gameObject: any) {
+		const y = Math.floor(index / this.config.cols)
+		const x = index - (y * this.config.cols)
+
+		this.placeByCoord(x, y, gameObject)
+		return this
 	}
 
 	placeByCoord(xx: number, yy: number, gameObject: PIXI.Container) {
-		const x = this.boxWidth * xx + this.boxWidth / 2;
-		const y = this.boxHeight * yy + this.boxHeight / 2;
+		const x = this.boxWidth * xx + this.boxWidth / 2
+		const y = this.boxHeight * yy + this.boxHeight / 2
 
-		gameObject.x = x;
-		gameObject.y = y;
+		gameObject.x = x
+		gameObject.y = y
 	}
 
 	showNumbers() {
+		if (this.textContainer) this.textContainer.destroy()
+
 		let count = 0
+		this.textContainer = new PIXI.Container
 
 		for (let col = 0; col < this.config.cols; col++) {
 			for (let row = 0; row < this.config.rows; row++) {
-				const textNumber = new PIXI.Text(count.toString(), 
+				const textNumber = new PIXI.Text(count.toString(),
 					new PIXI.TextStyle({
 						fontSize: 36,
 						fill: ['#ffffff', '#00ff99']
@@ -88,7 +104,9 @@ export default class AlignGrid {
 
 				this.placeAtIndex(count, textNumber)
 
-				this.app.stage.addChild(textNumber)
+				this.textContainer.addChild(textNumber)
+
+				this.app.stage.addChild(this.textContainer)
 
 				count++
 			}

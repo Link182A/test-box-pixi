@@ -11,6 +11,7 @@ class Application implements App {
 	stage: PIXI.Container
 	joy: Joy
 	container: HTMLElement
+	grid:AlignGrid
 	constructor() {
 		this.container = document.getElementById('gameContainer')!;
 
@@ -41,10 +42,10 @@ class Application implements App {
 			rows: 5,
 			cols: 10
 		}
-		const grid =  new AlignGrid(this, gridConfig)
+		this.grid =  new AlignGrid(this, gridConfig)
 			.show()
 			.showNumbers()
-			.placeAtIndex(31, this.joy)
+			.placeAtIndex(32, this.joy)
 	}
 
 	get screen(): PIXI.Rectangle {
@@ -61,10 +62,12 @@ class Application implements App {
 	}
 
 	changeSize(): void {
-		const option = this.joystickOptions()
+		this.grid
+			.show()
+			.showNumbers()
+			.placeAtIndex(32, this.joy)
 
 		this.renderer.resize(this.container.clientWidth, this.container.clientHeight)
-		this.joy.position.set(option.x, option.y)
 	}
 
 	render() {
